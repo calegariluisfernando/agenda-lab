@@ -1,0 +1,29 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap');
+
+:root {
+
+    --appBackgroundColor: #f4f6f9;
+    --borderColor: #dee2e6;
+
+    // Sidenav
+    --sidenav-content-bg: #222343;
+
+    // Geral
+    --bevi-primary-color: #222343;
+    --bevi-info-color: #25cbdb;
+}
+
+html,
+body,
+#root {
+
+    height: 100%;
+    width: 100%;
+}
+
+ul {
+
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}

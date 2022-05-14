@@ -1,0 +1,118 @@
+.sidenav {
+    position: fixed;
+
+    top: 0;
+    left: 0;
+
+    transition-property: z-index;
+    transition-delay: 0.1s;
+
+    .overlay-sidenav {
+        display: none;
+
+        width: 100%;
+        height: 100%;
+
+        background-color: transparent;
+    }
+
+    .sidenav-content {
+        position: absolute;
+
+        transition: all 0.1s linear;
+
+        background-color: var(--bs-white);
+        box-shadow: none;
+
+        top: 0;
+        left: -300px;
+
+        height: 100%;
+        width: 300px;
+
+        .sidenav-header {
+            min-height: 57px;
+            padding: 8px;
+            border-bottom: 1px solid var(--bs-gray-400);
+
+            .trigger-sidenav-wrap {
+                .btn-trigger-sidenav {
+                    color: var(--bs-blue);
+                    border-color: var(--bs-blue);
+                }
+            }
+        }
+
+        .sidenav-body {
+            padding: 8px;
+
+            .btn-sidenav {
+                text-decoration: none;
+                border: none;
+
+                &:hover,
+                &:focus,
+                &:focus-visible {
+                    box-shadow: none;
+                    outline: none;
+                    border-color: transparent;
+                }
+
+                &:hover {
+                    color: var(--bevi-info-color) !important;
+                }
+            }
+
+            .nav {
+                .nav-item {
+                    &:not(.hass-children) {
+                        padding: 5px 0;
+                        border: none;
+
+                        &:hover {
+                            a {
+                                color: var(--bevi-info-color) !important;
+                            }
+                        }
+                    }
+
+                    a {
+                        display: flex;
+                        align-items: center;
+
+                        text-decoration: none;
+
+                        &:focus-visible {
+                            outline: none;
+                        }
+                    }
+                }
+            }
+
+            .cursor-pointer {
+                cursor: pointer;
+            }
+        }
+    }
+
+    &.isOpen {
+        z-index: 300;
+        transition-delay: 0s;
+
+        height: 100vh;
+        width: 100%;
+
+        .overlay-sidenav {
+            display: block;
+        }
+
+        .sidenav-content {
+            left: 0;
+            box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+        }
+    }
+
+    .sub-menu-color {
+        color: var(--bs-dark);
+    }
+}
