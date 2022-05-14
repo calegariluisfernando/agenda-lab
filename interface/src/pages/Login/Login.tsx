@@ -24,10 +24,11 @@ export default function Login(): JSX.Element {
         event.preventDefault();
         const retornoLogin = JSON.parse(JSON.stringify(await signin(login, senha)));
 
-        if (Object.prototype.hasOwnProperty.call('code', retornoLogin)) {
+        if (retornoLogin?.code) {
 
-            const message = Object.prototype.hasOwnProperty.call('message', retornoLogin)
+            const message = retornoLogin?.message
                 ? retornoLogin.message : 'Ops! Algo deu errado, tente novamente mais tarde.';
+                
             setModalMessage(message);
             toggleModal();
         } else {

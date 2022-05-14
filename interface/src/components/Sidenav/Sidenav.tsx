@@ -4,7 +4,7 @@ import { Collapse, Nav, NavItem } from "reactstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretDown } from "@fortawesome/free-solid-svg-icons";
 
-import { IRoute, routes as allRoutes } from "./../../routes";
+import { IRoute, routes as allRoutes } from "../../routes";
 import { ISidenav } from "./ISidenav";
 import TriggerSidenav from "../Header/ButtonTrigger/TriggerSidenav";
 
