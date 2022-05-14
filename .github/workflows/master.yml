@@ -29,7 +29,9 @@ jobs:
         with:
           node-version: 16
 
-      - name: 5. Compile, Build and Test
+      - name: 5. Compile and Build
+        env:
+          CI: false
         run: sh ./build.sh
       
       - name: 6. Packaging
