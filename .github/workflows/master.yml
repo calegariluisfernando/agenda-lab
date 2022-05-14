@@ -3,7 +3,7 @@ name: Master pipeline
 on:
   push:
     branches:
-      - "master"
+      - "main"
     paths-ignore:
       - "LICENCE"
       - "*.md"
