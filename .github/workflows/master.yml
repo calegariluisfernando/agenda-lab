@@ -41,7 +41,7 @@ jobs:
           CONTRAST_USER_NAME: ${{ secrets.CONTRAST_USER_NAME }}
         run: sh ./package.sh
 
-      - name: 12. Publishing
+      - name: 7. Publishing
         env:
           REPOSITORY_URL: ${{ secrets.REPOSITORY_URL }}
           REPOSITORY_ID: ${{ secrets.REPOSITORY_ID }}
