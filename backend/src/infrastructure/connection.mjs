@@ -1,10 +1,12 @@
 import mysql from "mysql2/promise";
 
-const connection = mysql.createConnection({
+const configConnection = {
     host: 'database',
     user: 'root',
     password: '123',
     database: 'agendaLab'
-});
+};
+
+const connection = await mysql.createConnection(configConnection);
 
 export default connection;

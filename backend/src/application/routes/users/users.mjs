@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import UserRepository from '../../../infrastructure/Auth/UserRepository.mjs';
 import connection from '../../../infrastructure/connection.mjs';
 
 const router = Router();
@@ -6,10 +7,10 @@ const router = Router();
 /* GET users listing. */
 router.get('/', async function (req, res, next) {
 
-  const [fileds] = await connection.execute('select * from usuario');
-  console.log('fields', fileds);
+  const repo = new UserRepository(connection);
+  const users = await repo.userByLoginSenha('lfccalegari', '123');
 
-  res.send('respond with a resource');
+  return res.json({ users: users.toArray() });
 });
 
 export default router;
