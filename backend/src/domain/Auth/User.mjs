@@ -64,10 +64,15 @@ class User {
 
     toArray() {
         
-        let retorno = null;
+        let retorno = {};
         for (const item in this) {
-            retorno[item.split('_').pop()] = this[item];
+
+            if (item === '_hidePassword') continue;
+            const i = item.split('_').pop();
+
+            retorno[i] = this[i]
         }
+
         return retorno;
     }
 }

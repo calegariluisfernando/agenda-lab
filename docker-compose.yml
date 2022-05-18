@@ -23,6 +23,8 @@ services:
       - ./backend:/backend
     working_dir: /backend
     command: yarn start:dev
+    environment:
+      SECRET_TOKEN_KEY: calegari
 
   frontend:
     image: node:16
