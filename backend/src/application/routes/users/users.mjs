@@ -13,7 +13,6 @@ router.post('/auth/login', async function (req, res, next) {
   const {login, password} = req.body;
 
   const user = await repo.userByLoginSenha(login, password);
-
   const date = new Date();
 
   if (!user) {
