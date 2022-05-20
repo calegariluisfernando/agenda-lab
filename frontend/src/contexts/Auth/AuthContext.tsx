@@ -1,7 +1,7 @@
 import React, { createContext, ReactNode, useContext, useState } from "react";
 import LocalDataClient from "../../services/LocalDataClient/LocalDataClient";
 import HttpClient from "../../services/HttpClient/HttpClient";
-import { AuthContextType, UserType, MessageType } from "./IAuth";
+import { AuthContextType, IErrorLoginMessage, UserType } from "./IAuth";
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 
@@ -9,25 +9,21 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
 
     const [user, setUser] = useState(getUserLocal());
 
-    const signin = async (login: string, pass: string): Promise<UserType|MessageType> => {
+    const signin = async (login: string, pass: string): Promise<UserType|IErrorLoginMessage> => {
 
-        return { code: 100 } as MessageType;
         let userLogin           = {} as UserType;
         const httpClient        = HttpClient.getInstance();
         const localDataClient   = LocalDataClient.getInstance();
 
-        const params = { user: login, password: pass };
-        const { statusCode, data } = await httpClient.post('/auth/login', JSON.stringify(params));
+        const params = { login: login, password: pass };
+        const { code, data } = await httpClient.post('/users/auth/login', JSON.stringify(params));
 
-        let dataResponse = {} as { user: UserType };
-        if (data) {
+        if (code >= 200 && code < 300) {
 
-            dataResponse = JSON.parse(data);
-        }
-
-        if (statusCode >= 200 && statusCode <= 299) {
-
-            userLogin = dataResponse.user;
+            userLogin = data.user;
+            userLogin.token = data.token;
+            userLogin.tokenCreatedAt = data.tokenCreatedAt;
+            userLogin.tokenExpirationAt = data.tokenExpirationAt;
 
             httpClient.setToken(userLogin.token);
             localDataClient.insert('user', JSON.stringify(userLogin));
@@ -35,7 +31,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
             setUser(userLogin);
         } else {
 
-            return { code: statusCode } as MessageType;
+            return { code, message: data.message } as IErrorLoginMessage;
         }
 
         return userLogin;
@@ -79,7 +75,7 @@ function getUserLocal(): UserType {
 
 function isAnUserType(obj: UserType): boolean {
 
-    return 'id' in obj && obj && 'firstName' in obj && 'lastName' in obj
-        && 'email' in obj && 'login' in obj && 'tokenCreatedAt' in obj
+    return 'id' in obj && obj && 'name' in obj && 'email' in obj 
+        && 'login' in obj && 'tokenCreatedAt' in obj
         && 'tokenExpirationAt' in obj && 'token' in obj;
 }

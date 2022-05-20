@@ -1,25 +1,21 @@
 export interface AuthContextType {
     user    : UserType;
-    signin  : (user: string, pass: string) => Promise<UserType|MessageType>;
+    signin  : (user: string, pass: string) => Promise<UserType|IErrorLoginMessage>;
     signout : () => void;
 }
 
 export interface UserType {
     id                  : number,
-    firstName           : string,
-    lastName            : string,
-    codigoParceiro      : string,
-    email               : string,
+    name                : string,
     login               : string,
     password?           : string,
-    avatar?             : string,
-    created?            : Date,
+    email               : string,
     tokenCreatedAt      : Date,
     tokenExpirationAt   : Date,
     token               : string
 }
 
-export interface MessageType {
-    code    : number,
+export interface IErrorLoginMessage {
+    code: number,
     message?: string
 }

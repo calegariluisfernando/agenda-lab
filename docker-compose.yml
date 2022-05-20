@@ -1,5 +1,10 @@
 version: '3.9'
 
+networks:
+  agendaLab:
+    name: agendaLab
+    driver: bridge
+
 services:
   database:
     image: mariadb:latest
@@ -9,6 +14,8 @@ services:
       - '3306:3306'
     volumes:
       - ./database/volume:/var/lib/mysql
+    networks:
+      - agendaLab
     environment:
       MARIADB_ROOT_PASSWORD: 123
       MARIADB_DATABASE: agendaLab
@@ -23,6 +30,8 @@ services:
       - ./backend:/backend
     working_dir: /backend
     command: yarn start:dev
+    networks:
+      - agendaLab
     environment:
       SECRET_TOKEN_KEY: calegari
 
@@ -36,3 +45,5 @@ services:
       - ./frontend:/frontend
     working_dir: /frontend
     command: yarn start
+    networks:
+      - agendaLab

@@ -1,6 +1,6 @@
 import React, { ChangeEvent, FormEvent, useState } from "react";
-import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 import { useNavigate } from "react-router-dom";
+import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 
 import { useAuth } from "../../contexts/Auth/AuthContext";
 import './Login.scss';
@@ -22,9 +22,9 @@ export default function Login(): JSX.Element {
     const fazerLogin = async (event: FormEvent<HTMLFormElement>) => {
 
         event.preventDefault();
-        const retornoLogin = JSON.parse(JSON.stringify(await signin(login, senha)));
+        const retornoLogin = await signin(login, senha);
 
-        if (retornoLogin?.code) {
+        if ('code' in retornoLogin) {
 
             const message = retornoLogin?.message
                 ? retornoLogin.message : 'Ops! Algo deu errado, tente novamente mais tarde.';

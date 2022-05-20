@@ -21,24 +21,25 @@ class HttpClient implements IHttpClient {
 
     private static buildQueryUrl(url: string): string {
 
-        let newUrl = url;
-        if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
+        let newUrl = null;
+        newUrl = url;
+        // if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
 
-            const urlPars = url.split('?');
-            const stringParams = urlPars.length > 1 ? urlPars.pop() : undefined;
-            const searchParams = new URLSearchParams(stringParams);
+        //     const urlPars = url.split('?');
+        //     const stringParams = urlPars.length > 1 ? urlPars.pop() : undefined;
+        //     const searchParams = new URLSearchParams(stringParams);
 
-            if ((Object.prototype.hasOwnProperty.call(process.env, 'REACT_APP_DEBUG_PARAM_NAME') && process.env.REACT_APP_DEBUG_PARAM_NAME)
-                && (Object.prototype.hasOwnProperty.call(process.env, 'REACT_APP_DEBUG_PARAM_VALUE') && process.env.REACT_APP_DEBUG_PARAM_VALUE)) {
+        //     if ((Object.prototype.hasOwnProperty.call(process.env, 'REACT_APP_DEBUG_PARAM_NAME') && process.env.REACT_APP_DEBUG_PARAM_NAME)
+        //         && (Object.prototype.hasOwnProperty.call(process.env, 'REACT_APP_DEBUG_PARAM_VALUE') && process.env.REACT_APP_DEBUG_PARAM_VALUE)) {
 
-                searchParams.append(
-                    process.env.REACT_APP_DEBUG_PARAM_NAME,
-                    process.env.REACT_APP_DEBUG_PARAM_VALUE
-                );
-            }
+        //         searchParams.append(
+        //             process.env.REACT_APP_DEBUG_PARAM_NAME,
+        //             process.env.REACT_APP_DEBUG_PARAM_VALUE
+        //         );
+        //     }
 
-            newUrl = urlPars.concat([searchParams.toString()]).join('?');
-        }
+        //     newUrl = urlPars.concat([searchParams.toString()]).join('?');
+        // }
 
         return newUrl;
     }
@@ -63,30 +64,36 @@ class HttpClient implements IHttpClient {
         return this._baseUrl;
     }
 
+    private async handleResponse(response: Response) {
+
+        const { code, data } = await response.json();
+        return { code, data } as IHttpClientResponse;
+    }
+
     setToken(token: string): void {
 
         this.headers.delete('Authorization');
         this.headers.append('Authorization', `Bearer ${token}`);
     }
 
-    get(url: string): Promise<IHttpClientResponse> {
+    async get(url: string): Promise<IHttpClientResponse> {
 
-        return fetch(HttpClient.buildQueryUrl(`${this.baseUrl}${url}`), { headers: this.headers })
-            .then(async res => ({ statusCode: res.status, data: await res.text() } as IHttpClientResponse))
+        const res = await fetch(HttpClient.buildQueryUrl(`${this.baseUrl}${url}`), { headers: this.headers });
+        return await this.handleResponse(res);
     }
 
-    delete(url: string): Promise<IHttpClientResponse> {
+    async delete(url: string): Promise<IHttpClientResponse> {
 
         const options = {
             headers: this.headers,
             method: 'delete'
         };
 
-        return fetch(HttpClient.buildQueryUrl(`${this.baseUrl}${url}`), options)
-            .then(async res => ({ statusCode: res.status, data: await res.text() } as IHttpClientResponse))
+        const res = await fetch(HttpClient.buildQueryUrl(`${this.baseUrl}${url}`), options);
+        return await this.handleResponse(res);
     }
 
-    post(url: string, data: string): Promise<IHttpClientResponse> {
+    async post(url: string, data: string): Promise<IHttpClientResponse> {
 
         const options = {
             headers: this.headers,
@@ -94,11 +101,11 @@ class HttpClient implements IHttpClient {
             body: data
         };
 
-        return fetch(HttpClient.buildQueryUrl(`${this.baseUrl}${url}`), options)
-            .then(async res => ({ statusCode: res.status, data: await res.text() } as IHttpClientResponse))
+        const res = await fetch(HttpClient.buildQueryUrl(`${this.baseUrl}${url}`), options);
+        return await this.handleResponse(res);
     }
 
-    put(url: string, data: string): Promise<IHttpClientResponse> {
+    async put(url: string, data: string): Promise<IHttpClientResponse> {
 
         const options = {
             headers: this.headers,
@@ -106,8 +113,8 @@ class HttpClient implements IHttpClient {
             body: data
         };
 
-        return fetch(HttpClient.buildQueryUrl(`${this.baseUrl}${url}`), options)
-            .then(async res => ({ statusCode: res.status, data: await res.text() } as IHttpClientResponse))
+        const res = await fetch(HttpClient.buildQueryUrl(`${this.baseUrl}${url}`), options);
+        return await this.handleResponse(res);
     }
 }
 

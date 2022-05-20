@@ -32,7 +32,7 @@ function HeaderInfo() {
                 <li className="header-info-item">
                     <div className="media-avatar">
                         <img src={userImg} className="rounded-circle" />
-                        <h6 className="m-0 text-white user-name">{[user.firstName, user.lastName].join(' ')}</h6>
+                        <h6 className="m-0 text-white user-name">{user.name}</h6>
                     </div>
                 </li>
                 <li className="header-info-item">

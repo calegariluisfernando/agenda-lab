@@ -1,6 +1,10 @@
 export interface IHttpClientResponse {
-    statusCode: number,
-    data: string
+    code: number,
+    data?: any
+}
+
+export interface IHttpClientResponseError {
+    
 }
 
 export interface IHttpClient {

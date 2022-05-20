@@ -7,21 +7,40 @@ import connection from '../../../infrastructure/connection.mjs';
 const router = Router();
 
 /* GET users listing. */
-router.post('/login', async function (req, res, next) {
+router.post('/auth/login', async function (req, res, next) {
 
   const repo  = new UserRepository(connection);
   const {login, password} = req.body;
 
   const user = await repo.userByLoginSenha(login, password);
 
+  const date = new Date();
+
   if (!user) {
 
     return res.json({ status: false, resultSet: { error: 'User not found.'}});
   }
 
-  const token = jsonwebtoken.sign({ user }, process.env.SECRET_TOKEN_KEY, { expiresIn: '1 days', jwtid: uuidv4() });
+  const token = jsonwebtoken.sign(
+    { 
+      user: user.toArray() 
+    }, 
+    process.env.SECRET_TOKEN_KEY, 
+    {
+      algorithm : 'HS256', 
+      expiresIn : '1 days', 
+      jwtid     : uuidv4() 
+    }
+  );
 
-  return res.json({ status: true, resultSet: { user: user.toArray(), token } });
+  const data = {
+    user: user.toArray(),
+    token,
+    tokenCreatedAt: date.getTime(),
+    tokenExpirationAt: new Date(date.getTime() + (60 * 60 * 24 * 1000)).getTime()
+  }
+
+  return res.json({ code: 200, data });
 });
 
 export default router;
