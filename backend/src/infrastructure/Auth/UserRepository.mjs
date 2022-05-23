@@ -13,9 +13,9 @@ class UserRepository {
      */
     async userByLoginSenha(login, password) {
         
-        const sql = `SELECT p.id, p.nome, u.login, u.email, u.senha FROM agendaLab.pessoa p
-            JOIN agendaLab.usuario u ON (u.idPessoa = p.id)
-            WHERE u.login = ? AND u.senha = ? LIMIT 1`
+        const sql = `SELECT p.id, p.nome, u.login, u.email, u.senha FROM agendaLab.Pessoa p
+            JOIN agendaLab.Usuario u ON (u.idPessoa = p.id)
+            WHERE u.login = ? AND u.senha = MD5(?) LIMIT 1`
         ;
             
         const [ rows ] = await this._conn.execute(sql, [login, password]);

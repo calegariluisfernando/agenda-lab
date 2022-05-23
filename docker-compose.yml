@@ -1,4 +1,4 @@
-version: '3.9'
+version: '3'
 
 networks:
   agendaLab:
@@ -29,7 +29,7 @@ services:
     volumes:
       - ./backend:/backend
     working_dir: /backend
-    command: yarn start:dev
+    command: yarn start:install:dev
     networks:
       - agendaLab
     environment:
@@ -44,6 +44,6 @@ services:
     volumes:
       - ./frontend:/frontend
     working_dir: /frontend
-    command: yarn start
+    command: yarn start:install
     networks:
       - agendaLab

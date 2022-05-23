@@ -59,19 +59,20 @@
                 }
 
                 &:hover {
-                    color: var(--bevi-info-color) !important;
+                    // color: var(--bevi-info-color) !important;
                 }
             }
 
             .nav {
                 .nav-item {
                     &:not(.hass-children) {
+                        
                         padding: 5px 0;
                         border: none;
 
                         &:hover {
                             a {
-                                color: var(--bevi-info-color) !important;
+                                opacity: .8;
                             }
                         }
                     }
@@ -79,10 +80,11 @@
                     a {
                         display: flex;
                         align-items: center;
-
                         text-decoration: none;
+                        color: var(--bs-blue) !important;
 
                         &:focus-visible {
+
                             outline: none;
                         }
                     }

@@ -8,6 +8,9 @@
         "@fortawesome/free-regular-svg-icons": "^6.1.1",
         "@fortawesome/free-solid-svg-icons": "^6.1.1",
         "@fortawesome/react-fontawesome": "^0.1.18",
+        "@fullcalendar/daygrid": "^5.11.0",
+        "@fullcalendar/interaction": "^5.11.0",
+        "@fullcalendar/react": "^5.11.1",
         "bootstrap": "^5.1.3",
         "react": "^18.1.0",
         "react-dom": "^18.0.0",
@@ -38,6 +41,7 @@
         "install:clean": "rm -rfv node_modules && rm -rfv package-lock.json && rm -rfv yarn.lock && yarn",
         "start": "set NODE_ENV=development && react-scripts start .env.development --host 0.0.0.0",
         "start:clean": "yarn install:clean && set NODE_ENV=development && react-scripts start .env.development --host 0.0.0.0",
+        "start:install": "yarn && set NODE_ENV=development && react-scripts start .env.development --host 0.0.0.0",
         "build": "react-scripts build",
         "test": "react-scripts test --watchAll=false",
         "eject": "react-scripts eject"

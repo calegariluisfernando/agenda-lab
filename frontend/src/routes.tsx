@@ -1,9 +1,10 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAngleDoubleRight, faChevronCircleRight, faHouse, faUser } from "@fortawesome/free-solid-svg-icons";
+import { faClock, faHouse, faUser } from "@fortawesome/free-solid-svg-icons";
 
 import Principal from "./pages/Principal/Principal";
-import NivelPadraoDependente from "./pages/NivelPadraoDependente/NivelPadraoDependente";
+import Horarios from "./pages/Horarios/Horarios";
+import Usuario from "./pages/Usuario/Usuario";
 
 export interface IMenuItem {
     icon?       : JSX.Element,
@@ -30,36 +31,23 @@ export const routes = [
             icon: <FontAwesomeIcon icon={faHouse} className="me-2" />,
             classItem: 'text-white',
         }
-    },
-    {
-        path: "/cadastro",
-        name: "Cadastro",
+    }, {
+        path: "/horarios",
+        name: "Horarios",
+        element: <Horarios />,
+        isPrivate: true,
+        menuItem: {
+            icon: <FontAwesomeIcon icon={faClock} className="me-2" />,
+            classItem: 'text-white',
+        }
+    }, {
+        path: "/usuarios",
+        name: "Usuarios",
+        element: <Usuario />,
         isPrivate: true,
         menuItem: {
             icon: <FontAwesomeIcon icon={faUser} className="me-2" />,
             classItem: 'text-white',
-        },
-        sub: [
-            {
-                path: "/nivel-acesso-padrao",
-                name: "Nível de Acesso Padrão",
-                element: <NivelPadraoDependente />,
-                isPrivate: true,
-                menuItem: {
-                    icon: <FontAwesomeIcon icon={faChevronCircleRight} className="mx-2 sub-menu-color" />,
-                    classItem: 'text-white',
-                }
-            },
-            {
-                path: "/nivel-acesso-padrao2",
-                name: "Nível de Acesso Padrão2",
-                element: <h1>nivel-acesso-padrao2</h1>,
-                isPrivate: true,
-                menuItem: {
-                    icon: <FontAwesomeIcon icon={faAngleDoubleRight} className="me-2 ms-4 sub-menu-color" />,
-                    classItem: 'text-white',
-                }
-            }
-        ],
+        }
     }
 ] as Array<IRoute>;

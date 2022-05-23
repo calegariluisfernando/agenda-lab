@@ -17,7 +17,8 @@ router.post('/auth/login', async function (req, res, next) {
 
   if (!user) {
 
-    return res.json({ status: false, resultSet: { error: 'User not found.'}});
+    console.log();
+    return res.json({ status: false, data: { message: 'User not found.'}});
   }
 
   const token = jsonwebtoken.sign(

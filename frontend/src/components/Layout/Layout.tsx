@@ -8,7 +8,7 @@ import "./Layout.scss";
 
 export default function Layout() {
 
-    const [isOpen, setIsOpen] = useState(true);
+    const [isOpen, setIsOpen] = useState(false);
 
     return (
         <div id="wrapApp">
