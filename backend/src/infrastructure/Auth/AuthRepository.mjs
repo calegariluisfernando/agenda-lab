@@ -1,6 +1,6 @@
 import User from "../../domain/Auth/User.mjs";
 
-class UserRepository {
+class AuthRepository {
 
     constructor($conn) {
         this._conn = $conn;
@@ -29,6 +29,22 @@ class UserRepository {
 
         return model
     }
+
+    /**
+     * @param {User} user 
+     */
+    async userSave(user) {
+
+        const sql = `INSERT INTO agendaLab.Pessoa (nome, dataCadastro, horaCadastro)
+            VALUES(?, CURDATE(), CURTIME())`;
+
+        const [ rows ] = await this._conn.execute(sql, [ user.name ]);
+        
+        // INSERT INTO agendaLab.Usuario (idPessoa, login, senha, email)
+        // VALUES(?, ?, ?, ?)
+
+        return rows
+    }
 }
 
-export default UserRepository;
+export default AuthRepository;

@@ -1,7 +1,8 @@
 import { Router } from 'express';
 import jsonwebtoken from 'jsonwebtoken';
-import { v4 as uuidv4} from 'uuid';
-import UserRepository from '../../../infrastructure/Auth/UserRepository.mjs';
+import { v4 as uuidv4 } from 'uuid';
+import User from '../../../domain/Auth/User.mjs';
+import AuthRepository from '../../../infrastructure/Auth/AuthRepository.mjs';
 import connection from '../../../infrastructure/connection.mjs';
 
 const router = Router();
@@ -9,27 +10,26 @@ const router = Router();
 /* GET users listing. */
 router.post('/auth/login', async function (req, res, next) {
 
-  const repo  = new UserRepository(connection);
-  const {login, password} = req.body;
+  const repo = new AuthRepository(connection);
+  const { login, password } = req.body;
 
   const user = await repo.userByLoginSenha(login, password);
   const date = new Date();
 
   if (!user) {
 
-    console.log();
-    return res.json({ status: false, data: { message: 'User not found.'}});
+    return res.json({ status: false, data: { message: 'User not found.' } });
   }
 
   const token = jsonwebtoken.sign(
-    { 
-      user: user.toArray() 
-    }, 
-    process.env.SECRET_TOKEN_KEY, 
     {
-      algorithm : 'HS256', 
-      expiresIn : '1 days', 
-      jwtid     : uuidv4() 
+      user: user.toArray()
+    },
+    process.env.SECRET_TOKEN_KEY,
+    {
+      algorithm: 'HS256',
+      expiresIn: '1 days',
+      jwtid: uuidv4()
     }
   );
 
@@ -41,6 +41,17 @@ router.post('/auth/login', async function (req, res, next) {
   }
 
   return res.json({ code: 200, data });
+});
+
+router.post('/save', async function (req, res, next) {
+
+  const repo = new AuthRepository(connection);
+  const { nome, login, senha, confirmSenha, email } = req.body;
+
+  const model = new User(0, nome, login, senha, email);
+  const user  = await repo.userSave(model);
+
+  return user;
 });
 
 export default router;
