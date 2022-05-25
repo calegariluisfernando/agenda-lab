@@ -17,40 +17,37 @@ interface IUser {
 
 export default function Usuario(): JSX.Element {
 
-    const [modal, setModal] = useState(false);
-    const [iuser, setIuser] = useState(
-        {
-            nome: '',
-            login: '',
-            senha: '',
-            confirmSenha: '',
-            email: '',
-        } as IUser
-    );
+    const [modal, setModal]                 = useState(false);
+    
+    const [inome, setINome]                 = useState('');
+    const [ilogin, setILogin]               = useState('');
+    const [isenha, setISenha]               = useState('');
+    const [iconfirmSenha, setIConfirmSenha] = useState('');
+    const [iemail, setIEmail]               = useState('');
 
-    function handleInputsModalAddUsuario(event: ChangeEvent<HTMLInputElement>): void {
+    const handleSalvarModalAddUsuario = async (event: React.MouseEvent<HTMLButtonElement>): Promise<void> => {
 
-        const target = event.target;
-        const value = target.type === 'checkbox' ? target.checked : target.value;
-        const name = target.name;
-
-        setIuser({
-            [name]: value
-        });
-    }
-
-    const handleSalvarModalAddUsuario = async (event: ChangeEvent<HTMLButtonElement>): void => {
+        event.preventDefault();
 
         const service = HttpClient.getInstance();
-        const retorno = await service.post('/users/save', JSON.stringify({ 
-            nome: iuser.nome,
-            login: iuser.login,
-            senha: iuser.senha, 
-            confirmSenha: iuser.confirmSenha,
-            email: iuser.email
-        }));
+        const obj = {
+            nome        : inome,
+            login       : ilogin,
+            senha       : isenha,
+            confirmSenha: iconfirmSenha,
+            email       : iemail
+        };
 
-        console.log('retorno:', retorno);
+        await service.post('/users/save', JSON.stringify(obj));
+
+        clearModalAddUser();
+        setModal(!modal);
+    }
+
+    const clearModalAddUser = () => {
+        setINome(''); setILogin('');
+        setISenha(''); setIConfirmSenha('');
+        setIEmail('');
     }
 
     return (
@@ -144,7 +141,7 @@ export default function Usuario(): JSX.Element {
             <Modal
                 isOpen={modal}
                 backdrop={'static'}
-                onClosed={() => setIuser({} as IUser)}
+                // onClosed={() => setIuser({} as IUser)}
                 centered={true}
             >
                 <ModalHeader
@@ -162,8 +159,8 @@ export default function Usuario(): JSX.Element {
                                     name='nome'
                                     placeholder='Nome'
                                     type='text'
-                                    value={iuser.nome}
-                                    onChange={event => handleInputsModalAddUsuario(event)}
+                                    value={inome}
+                                    onChange={event => setINome(event.target.value)}
                                 />
                             </FormGroup>
                         </Col>
@@ -175,8 +172,8 @@ export default function Usuario(): JSX.Element {
                                     name='login'
                                     placeholder='Login'
                                     type='text'
-                                    value={iuser.login}
-                                    onChange={event => handleInputsModalAddUsuario(event)}
+                                    value={ilogin}
+                                    onChange={event => setILogin(event.target.value)}
                                 />
                             </FormGroup>
                         </Col>
@@ -190,8 +187,8 @@ export default function Usuario(): JSX.Element {
                                     name='senha'
                                     placeholder='Senha'
                                     type='password'
-                                    value={iuser.senha}
-                                    onChange={event => handleInputsModalAddUsuario(event)}
+                                    value={isenha}
+                                    onChange={event => setISenha(event.target.value)}
                                 />
                             </FormGroup>
                         </Col>
@@ -203,8 +200,8 @@ export default function Usuario(): JSX.Element {
                                     name='confirSenha'
                                     placeholder='Confirmar Senha'
                                     type='password'
-                                    value={iuser.confirmSenha}
-                                    onChange={event => handleInputsModalAddUsuario(event)}
+                                    value={iconfirmSenha}
+                                    onChange={event => setIConfirmSenha(event.target.value)}
                                 />
                             </FormGroup>
                         </Col>
@@ -218,8 +215,8 @@ export default function Usuario(): JSX.Element {
                                     name='email'
                                     placeholder='E-mail'
                                     type='email'
-                                    value={iuser.email}
-                                    onChange={event => handleInputsModalAddUsuario(event)}
+                                    value={iemail}
+                                    onChange={event => setIEmail(event.target.value)}
                                 />
                             </FormGroup>
                         </Col>
@@ -228,6 +225,7 @@ export default function Usuario(): JSX.Element {
                 <ModalFooter>
                     <Button
                         color="primary"
+                        onClick={handleSalvarModalAddUsuario}
                     >
                         Salvar
                     </Button>

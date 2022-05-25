@@ -51,7 +51,7 @@ router.post('/save', async function (req, res, next) {
   const model = new User(0, nome, login, senha, email);
   const user  = await repo.userSave(model);
 
-  return user;
+  return res.json(user.toArray());
 });
 
 export default router;
