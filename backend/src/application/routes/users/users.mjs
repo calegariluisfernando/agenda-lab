@@ -1,9 +1,12 @@
 import { Router } from 'express';
 import jsonwebtoken from 'jsonwebtoken';
 import { v4 as uuidv4 } from 'uuid';
+import TipoUsuario from '../../../domain/Auth/TipoUsuario.mjs';
 import User from '../../../domain/Auth/User.mjs';
 import AuthRepository from '../../../infrastructure/Auth/AuthRepository.mjs';
 import connection from '../../../infrastructure/connection.mjs';
+import UserRepository from '../../../infrastructure/User/UserRespository.mjs';
+import ResponseUtil from '../../util/ResponseUtil.mjs';
 
 const router = Router();
 
@@ -40,18 +43,27 @@ router.post('/auth/login', async function (req, res, next) {
     tokenExpirationAt: new Date(date.getTime() + (60 * 60 * 24 * 1000)).getTime()
   }
 
-  return res.json({ code: 200, data });
+  return res.json(ResponseUtil.responseWithData(data));
 });
 
 router.post('/save', async function (req, res, next) {
 
-  const repo = new AuthRepository(connection);
-  const { nome, login, senha, confirmSenha, email } = req.body;
+  const repo = new UserRepository(connection);
+  const { senha, confirmSenha, email, nome, login, tipoUsuario } = req.body;
 
-  const model = new User(0, nome, login, senha, email);
+  const model = new User(0, senha, email, nome, login, new TipoUsuario(tipoUsuario));
   const user  = await repo.userSave(model);
 
-  return res.json(user.toArray());
+  return res.json(ResponseUtil.responseWithData(user.toArray()));
+});
+
+router.get('/tipos-usuarios', async function(req, res, next) {
+  
+  const repo = new UserRepository(connection);
+  const tiposUsuarios = await repo.getAllTiposUsuarios();
+  
+  const t = tiposUsuarios.map(e => e.toArray());
+  return res.json(ResponseUtil.responseWithData(t));
 });
 
 export default router;

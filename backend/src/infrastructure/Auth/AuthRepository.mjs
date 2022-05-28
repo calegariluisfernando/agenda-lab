@@ -7,7 +7,6 @@ class AuthRepository {
     }
 
     /**
-     * 
      * @param {string} login 
      * @param {string} password 
      */
@@ -28,38 +27,6 @@ class AuthRepository {
         }
 
         return model
-    }
-
-    /**
-     * @param {User} user 
-     */
-    async userSave(user) {
-
-        try {
-
-            await this._conn.beginTransaction();
-
-            const sqlPessoa = `INSERT INTO agendaLab.Pessoa (nome, dataCadastro, horaCadastro)
-            VALUES(?, CURDATE(), CURTIME())`;
-
-            const [{ insertId }] = await this._conn.execute(sqlPessoa, [user.name]);
-
-            user.id = insertId;
-            user.hidePassword = !user.hidePassword;
-            const paramters = [user.id, user.login, user.password, user.email];
-            user.hidePassword = !user.hidePassword;
-
-            const sqlUsuario = `INSERT INTO agendaLab.Usuario (idPessoa, login, senha, email)
-            VALUES(?, ?, MD5(?), ?)`;
-
-            await this._conn.execute(sqlUsuario, paramters);
-
-            await this._conn.commit();
-            return user;
-        } catch (error) {
-
-            await this._conn.rollback();
-        }
     }
 }
 

@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 import { faPlus, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Button, Card, CardBody, CardFooter, CardHeader, Col, FormGroup, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader, Row, Table } from 'reactstrap';
@@ -15,27 +15,29 @@ interface IUser {
     email?: string;
 }
 
+const service = HttpClient.getInstance();
+
 export default function Usuario(): JSX.Element {
 
-    const [modal, setModal]                 = useState(false);
-    
-    const [inome, setINome]                 = useState('');
-    const [ilogin, setILogin]               = useState('');
-    const [isenha, setISenha]               = useState('');
+    const [modal, setModal] = useState(false);
+
+    const [inome, setINome] = useState('');
+    const [ilogin, setILogin] = useState('');
+    const [isenha, setISenha] = useState('');
     const [iconfirmSenha, setIConfirmSenha] = useState('');
-    const [iemail, setIEmail]               = useState('');
+    const [iemail, setIEmail] = useState('');
+    const [itipoUsuario, setITipoUsuario] = useState([{codigo: 1, descricao: 'root'}]);
 
     const handleSalvarModalAddUsuario = async (event: React.MouseEvent<HTMLButtonElement>): Promise<void> => {
 
         event.preventDefault();
 
-        const service = HttpClient.getInstance();
         const obj = {
-            nome        : inome,
-            login       : ilogin,
-            senha       : isenha,
+            nome: inome,
+            login: ilogin,
+            senha: isenha,
             confirmSenha: iconfirmSenha,
-            email       : iemail
+            email: iemail
         };
 
         await service.post('/users/save', JSON.stringify(obj));
@@ -50,6 +52,7 @@ export default function Usuario(): JSX.Element {
         setIEmail('');
     }
 
+    const options = itipoUsuario.map((el, idx) => <option key={idx} value={el.codigo}>{el.descricao}</option>).join('');
     return (
         <>
             <main className='container-fluid'>
@@ -141,7 +144,6 @@ export default function Usuario(): JSX.Element {
             <Modal
                 isOpen={modal}
                 backdrop={'static'}
-                // onClosed={() => setIuser({} as IUser)}
                 centered={true}
             >
                 <ModalHeader
@@ -151,7 +153,7 @@ export default function Usuario(): JSX.Element {
                 </ModalHeader>
                 <ModalBody>
                     <Row>
-                        <Col xs={6}>
+                        <Col>
                             <FormGroup>
                                 <Label for='inome'>Nome</Label>
                                 <Input
@@ -164,6 +166,8 @@ export default function Usuario(): JSX.Element {
                                 />
                             </FormGroup>
                         </Col>
+                    </Row>
+                    <Row>
                         <Col xs={6}>
                             <FormGroup>
                                 <Label for='ilogin'>Login</Label>
@@ -175,6 +179,18 @@ export default function Usuario(): JSX.Element {
                                     value={ilogin}
                                     onChange={event => setILogin(event.target.value)}
                                 />
+                            </FormGroup>
+                        </Col>
+                        <Col xs={6}>
+                            <FormGroup>
+                                <Label for='itipoUsuario'>Tipo de Usuário</Label>
+                                <Input
+                                    id='itipoUsuario'
+                                    name='itipoUsuario'
+                                    type='select'
+                                >
+                                    {options}
+                                </Input>
                             </FormGroup>
                         </Col>
                     </Row>
