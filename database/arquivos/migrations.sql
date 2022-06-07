@@ -177,6 +177,8 @@ ALTER TABLE `agendamento`
 --
 ALTER TABLE `usuario`
   ADD CONSTRAINT `TipoUsuario_Usuario` FOREIGN KEY (`tip_codigo`) REFERENCES `tipousuario` (`tip_codigo`);
+
+INSERT INTO agendaLab.tipousuario(tip_descricao) VALUES('root');
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

@@ -1,11 +1,11 @@
-import React, { ChangeEvent, useEffect, useState } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 import { faPlus, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Button, Card, CardBody, CardFooter, CardHeader, Col, FormGroup, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader, Row, Table } from 'reactstrap';
+import HttpClient from '../../services/HttpClient/HttpClient';
 import HeaderPage from '../../components/HeaderPage/HeaderPage';
 
 import './../EstiloPaginas.scss';
-import HttpClient from '../../services/HttpClient/HttpClient';
 
 interface IUser {
     nome?: string;
@@ -16,7 +16,6 @@ interface IUser {
 }
 
 const service = HttpClient.getInstance();
-
 export default function Usuario(): JSX.Element {
 
     const [modal, setModal] = useState(false);
@@ -26,7 +25,7 @@ export default function Usuario(): JSX.Element {
     const [isenha, setISenha] = useState('');
     const [iconfirmSenha, setIConfirmSenha] = useState('');
     const [iemail, setIEmail] = useState('');
-    const [itipoUsuario, setITipoUsuario] = useState([{codigo: 1, descricao: 'root'}]);
+    const [itipoUsuario, setITipoUsuario] = useState('');
 
     const handleSalvarModalAddUsuario = async (event: React.MouseEvent<HTMLButtonElement>): Promise<void> => {
 
@@ -52,7 +51,20 @@ export default function Usuario(): JSX.Element {
         setIEmail('');
     }
 
-    const options = itipoUsuario.map((el, idx) => <option key={idx} value={el.codigo}>{el.descricao}</option>).join('');
+    let op = (() => <option>Valor Padrao</option>)();
+
+    useEffect(() => {
+        
+        (async () => {
+
+            const { data } = await service.get(`/users/tipos-usuarios`);
+            op = data.map((e: any) => (<option key={e.codigo} value={e.codigo}>e.descricao</option>)).join('');
+            
+            console.log('Op:', op);
+        })();
+
+    }, []);
+
     return (
         <>
             <main className='container-fluid'>
@@ -189,7 +201,7 @@ export default function Usuario(): JSX.Element {
                                     name='itipoUsuario'
                                     type='select'
                                 >
-                                    {options}
+                                    {op}
                                 </Input>
                             </FormGroup>
                         </Col>

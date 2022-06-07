@@ -26,7 +26,7 @@ export const routes = [
         path: "/",
         name: "Principal",
         element: <Principal />,
-        isPrivate: true,
+        isPrivate: false,
         menuItem: {
             icon: <FontAwesomeIcon icon={faHouse} className="me-2" />,
             classItem: 'text-white',
@@ -35,7 +35,7 @@ export const routes = [
         path: "/horarios",
         name: "Horarios",
         element: <Horarios />,
-        isPrivate: true,
+        isPrivate: false,
         menuItem: {
             icon: <FontAwesomeIcon icon={faClock} className="me-2" />,
             classItem: 'text-white',
@@ -44,7 +44,7 @@ export const routes = [
         path: "/usuarios",
         name: "Usuarios",
         element: <Usuario />,
-        isPrivate: true,
+        isPrivate: false,
         menuItem: {
             icon: <FontAwesomeIcon icon={faUser} className="me-2" />,
             classItem: 'text-white',
