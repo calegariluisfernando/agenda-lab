@@ -46,7 +46,11 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
 
     const value = { user, signin, signout };
 
-    return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+    return (
+        <AuthContext.Provider value={value}>
+            { children }
+        </AuthContext.Provider>
+    );
 }
 
 export function useAuth() {

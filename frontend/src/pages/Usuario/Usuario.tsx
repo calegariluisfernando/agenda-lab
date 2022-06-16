@@ -1,69 +1,106 @@
-import React, { ReactNode, useEffect, useState } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 import { faPlus, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Button, Card, CardBody, CardFooter, CardHeader, Col, FormGroup, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader, Row, Table } from 'reactstrap';
+import { Button, Card, CardBody, CardFooter, CardHeader, Col, FormFeedback, FormGroup, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader, Row, Table } from 'reactstrap';
 import HttpClient from '../../services/HttpClient/HttpClient';
 import HeaderPage from '../../components/HeaderPage/HeaderPage';
+import { useLoading } from '../../contexts/Loading/LoadingContext';
+import FormValidator from '../../services/Validator/FormValidator';
 
 import './../EstiloPaginas.scss';
 
 interface IUser {
-    nome?: string;
-    login?: string;
-    senha?: string;
-    confirmSenha?: string;
-    email?: string;
+    nome?           : string;
+    login?          : string;
+    senha?          : string;
+    confirmSenha?   : string
+    tipoUsuario?    : string,
+    email?          : string;
 }
 
+interface ITipoUsuario {
+    codigo      : number,
+    descricao   : string
+}
+
+const regexEmail = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/g;
 const service = HttpClient.getInstance();
 export default function Usuario(): JSX.Element {
 
-    const [modal, setModal] = useState(false);
+    useEffect(() => {
 
-    const [inome, setINome] = useState('');
-    const [ilogin, setILogin] = useState('');
-    const [isenha, setISenha] = useState('');
-    const [iconfirmSenha, setIConfirmSenha] = useState('');
-    const [iemail, setIEmail] = useState('');
-    const [itipoUsuario, setITipoUsuario] = useState('');
+        service.get('/users/tipos-usuarios')
+            .then(res => setTiposUsuarios(res.data))
+    }, []);
+
+    const { toggle } = useLoading();
+
+    const [modal, setModal] = useState(false);
+    const [tiposUsuarios, setTiposUsuarios] = useState([] as Array<ITipoUsuario>);
 
     const handleSalvarModalAddUsuario = async (event: React.MouseEvent<HTMLButtonElement>): Promise<void> => {
 
         event.preventDefault();
+        toggle(true);
+        // await service.post('/users/save', JSON.stringify(camposModal));
 
-        const obj = {
-            nome: inome,
-            login: ilogin,
-            senha: isenha,
-            confirmSenha: iconfirmSenha,
-            email: iemail
-        };
-
-        await service.post('/users/save', JSON.stringify(obj));
-
-        clearModalAddUser();
         setModal(!modal);
+
+        toggle(false);
     }
 
-    const clearModalAddUser = () => {
-        setINome(''); setILogin('');
-        setISenha(''); setIConfirmSenha('');
-        setIEmail('');
-    }
+    const modalValidate = FormValidator({ 
+        initialValues: {
+            nome        : '',
+            login       : '',
+            senha       : '',
+            confirmSenha: '',
+            tipoUsuario : '',
+            email       : ''
+        } as IUser,
+        validate: (values: any) => {
 
-    let op = (() => <option>Valor Padrao</option>)();
+            const errors = {} as any;
 
-    useEffect(() => {
-        
-        (async () => {
+            if (!values.nome.length) {
 
-            const { data } = await service.get(`/users/tipos-usuarios`);
-            op = data.map((e: any) => (<option key={e.codigo} value={e.codigo}>e.descricao</option>)).join('');
-            
-            console.log('Op:', op);
-        })();
+                errors.nome = "O Campo Nome deve ser preenchido."
+            }
 
-    }, []);
+            if (!values.login.length) {
+
+                errors.login = "O Campo login deve ser preenchido."
+            }
+
+            if (values.senha.length < 6) {
+
+                errors.senha = "O Campo senha deve conter mais 5 de caracteres.";
+            }
+
+            if (values.confirmSenha.length < 6) {
+
+                errors.confirmSenha = "O Campo senha deve conter mais 5 de caracteres.";
+            }
+
+            if (values.confirmSenha !== values.senha) {
+
+                errors.senha        = "O Confirmar Senha deve ser igual ao campo Senha.";
+                errors.confirmSenha = "O Confirmar Senha deve ser igual ao campo Senha.";
+            }
+
+            if (!values.tipoUsuario.length) {
+
+                errors.tipoUsuario = "O Campo Tipo Usuario deve ser preenchido.";
+            }
+
+            if (!regexEmail.test(values.email)) {
+
+                errors.email = "O Campo E-mail deve conter um formato válido.";
+            }
+
+            return errors;
+        } 
+    });
 
     return (
         <>
@@ -173,9 +210,14 @@ export default function Usuario(): JSX.Element {
                                     name='nome'
                                     placeholder='Nome'
                                     type='text'
-                                    value={inome}
-                                    onChange={event => setINome(event.target.value)}
+                                    onBlur={ modalValidate.handleBlur }
+                                    onChange={ modalValidate.handleChange }
+                                    value={ modalValidate.values.nome }
+                                    invalid={ modalValidate.touched.nome && modalValidate.errors.nome }
                                 />
+                                <FormFeedback>
+                                    { modalValidate.errors.nome }
+                                </FormFeedback>
                             </FormGroup>
                         </Col>
                     </Row>
@@ -188,9 +230,14 @@ export default function Usuario(): JSX.Element {
                                     name='login'
                                     placeholder='Login'
                                     type='text'
-                                    value={ilogin}
-                                    onChange={event => setILogin(event.target.value)}
+                                    onBlur={ modalValidate.handleBlur }
+                                    onChange={ modalValidate.handleChange }
+                                    value={ modalValidate.values.login }
+                                    invalid={ modalValidate.touched.login && modalValidate.errors.login }
                                 />
+                                <FormFeedback>
+                                    { modalValidate.errors.login }
+                                </FormFeedback>
                             </FormGroup>
                         </Col>
                         <Col xs={6}>
@@ -198,11 +245,19 @@ export default function Usuario(): JSX.Element {
                                 <Label for='itipoUsuario'>Tipo de Usuário</Label>
                                 <Input
                                     id='itipoUsuario'
-                                    name='itipoUsuario'
+                                    name='tipoUsuario'
                                     type='select'
+                                    onBlur={ modalValidate.handleBlur }
+                                    onChange={ modalValidate.handleChange }
+                                    value={ modalValidate.values.tipoUsuario }
+                                    invalid={ modalValidate.touched.tipoUsuario && modalValidate.errors.tipoUsuario }
                                 >
-                                    {op}
+                                    <option value="0">Selecione uma opção</option>
+                                    { tiposUsuarios.map(tipoUsuario => (<option key={tipoUsuario.codigo} value={tipoUsuario.codigo}>{ tipoUsuario.descricao }</option>)) }
                                 </Input>
+                                <FormFeedback>
+                                    { modalValidate.errors.tipoUsuario }
+                                </FormFeedback>
                             </FormGroup>
                         </Col>
                     </Row>
@@ -215,9 +270,14 @@ export default function Usuario(): JSX.Element {
                                     name='senha'
                                     placeholder='Senha'
                                     type='password'
-                                    value={isenha}
-                                    onChange={event => setISenha(event.target.value)}
+                                    onBlur={ modalValidate.handleBlur }
+                                    onChange={ modalValidate.handleChange }
+                                    value={ modalValidate.values.senha }
+                                    invalid={ modalValidate.touched.senha && modalValidate.errors.senha }
                                 />
+                                <FormFeedback>
+                                    { modalValidate.errors.senha }
+                                </FormFeedback>
                             </FormGroup>
                         </Col>
                         <Col xs={6}>
@@ -225,12 +285,17 @@ export default function Usuario(): JSX.Element {
                                 <Label for='iconfirSenha'>Confirmar Senha</Label>
                                 <Input
                                     id='iconfirSenha'
-                                    name='confirSenha'
+                                    name='confirmSenha'
                                     placeholder='Confirmar Senha'
                                     type='password'
-                                    value={iconfirmSenha}
-                                    onChange={event => setIConfirmSenha(event.target.value)}
+                                    onBlur={ modalValidate.handleBlur }
+                                    onChange={ modalValidate.handleChange }
+                                    value={ modalValidate.values.confirmSenha }
+                                    invalid={ modalValidate.touched.confirmSenha && modalValidate.errors.confirmSenha }
                                 />
+                                <FormFeedback>
+                                    { modalValidate.errors.confirmSenha }
+                                </FormFeedback>
                             </FormGroup>
                         </Col>
                     </Row>
@@ -243,9 +308,14 @@ export default function Usuario(): JSX.Element {
                                     name='email'
                                     placeholder='E-mail'
                                     type='email'
-                                    value={iemail}
-                                    onChange={event => setIEmail(event.target.value)}
+                                    onBlur={ modalValidate.handleBlur }
+                                    onChange={ modalValidate.handleChange }
+                                    value={ modalValidate.values.email }
+                                    invalid={ modalValidate.touched.email && modalValidate.errors.email }
                                 />
+                                <FormFeedback>
+                                    { modalValidate.errors.email }
+                                </FormFeedback>
                             </FormGroup>
                         </Col>
                     </Row>

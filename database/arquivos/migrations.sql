@@ -178,6 +178,9 @@ ALTER TABLE `agendamento`
 ALTER TABLE `usuario`
   ADD CONSTRAINT `TipoUsuario_Usuario` FOREIGN KEY (`tip_codigo`) REFERENCES `tipousuario` (`tip_codigo`);
 
+ALTER TABLE `usuario` 
+ADD UNIQUE INDEX `idxChaveEmailUsuario` (`usu_email` ASC);
+
 INSERT INTO agendaLab.tipousuario(tip_descricao) VALUES('root');
 COMMIT;
 

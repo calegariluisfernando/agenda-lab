@@ -7,7 +7,7 @@ networks:
 
 services:
   database:
-    image: mariadb:latest
+    image: mysql:latest
     container_name: database
     hostname: database
     ports:
@@ -17,8 +17,8 @@ services:
     networks:
       - agendaLab
     environment:
-      MARIADB_ROOT_PASSWORD: 123
-      MARIADB_DATABASE: agendaLab
+      MYSQL_ROOT_PASSWORD: 123
+      MYSQL_DATABASE: agendaLab
 
   backend:
     image: node:16

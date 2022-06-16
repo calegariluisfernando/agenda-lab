@@ -6,21 +6,24 @@ import Layout from "./components/Layout/Layout";
 import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
 import NoMatch from "./pages/NoMatch/NoMatch";
 import Login from './pages/Login/Login';
+import LoadingProvider from './contexts/Loading/LoadingContext';
 
 export default function App(): JSX.Element {
 
     return (
         <BrowserRouter>
-            <Routes>
-                <Route path="/" element={<Layout />}>
+            <LoadingProvider>
+                <Routes>
+                    <Route path="/" element={<Layout />}>
 
-                    {getRoutes(routes)}
+                        { getRoutes(routes) }
 
-                </Route>
+                    </Route>
 
-                <Route path='/login' element={<Login />} />
-                <Route path="*" element={<NoMatch />} />
-            </Routes>
+                    <Route path='/login' element={<Login />} />
+                    <Route path="*" element={<NoMatch />} />
+                </Routes>
+            </LoadingProvider>
         </BrowserRouter>
     );
 }
